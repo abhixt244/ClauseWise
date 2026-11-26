@@ -35,11 +35,11 @@ TEST_CLAUSES = [
 def test_single_pass():
     """Test the current single-pass approach"""
     print("\n" + "="*80)
-    print("TESTING SINGLE-PASS APPROACH (granite_api.py)")
+    print("TESTING GEMINI API APPROACH (gemini_api.py)")
     print("="*80)
     
     try:
-        from granite_api import call_granite
+        from gemini_api import call_gemini
         
         results = []
         for i, test in enumerate(TEST_CLAUSES, 1):
@@ -47,7 +47,7 @@ def test_single_pass():
             print(f"Clause: {test['text'][:80]}...")
             print(f"Expected Risk: {test['expected_risk']}")
             
-            success, result = call_granite(test['text'])
+            success, result = call_gemini(test['text'])
             
             if success:
                 actual_risk = result.get('risk', 'UNKNOWN')
@@ -90,11 +90,11 @@ def test_single_pass():
 def test_two_pass():
     """Test the two-pass approach"""
     print("\n" + "="*80)
-    print("TESTING TWO-PASS APPROACH (granite_api_advanced.py)")
+    print("TESTING LEGACY LOCAL TWO-PASS APPROACH (local_granite_api_advanced.py)")
     print("="*80)
     
     try:
-        from granite_api_advanced import call_granite
+        from local_granite_api_advanced import call_granite
         
         results = []
         for i, test in enumerate(TEST_CLAUSES, 1):
@@ -153,10 +153,7 @@ if __name__ == "__main__":
     single_results = test_single_pass()
     
     print("\n\n" + "⏸️  PAUSE" + "\n")
-    print("To test the two-pass approach:")
-    print("1. Backup: copy granite_api.py granite_api_single.py")
-    print("2. Switch: copy granite_api_advanced.py granite_api.py")
-    print("3. Run this script again")
+    print("The two-pass approach is a legacy local-model alternative.")
     print("\nOr press Enter to skip two-pass testing...")
     
     input()
@@ -185,6 +182,6 @@ if __name__ == "__main__":
                 print("\n🤝 Both approaches have equal accuracy")
                 
     except ImportError:
-        print("Two-pass approach not available (granite_api_advanced.py not active)")
+        print("Legacy local two-pass approach is unavailable (check its dependencies).")
     
     print("\n✅ Testing complete!")

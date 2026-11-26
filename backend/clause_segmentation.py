@@ -23,7 +23,10 @@ def segment_clauses(text: str, min_words: int = 10, max_words: int = 150) -> Lis
     if len(parts) > 1:
         for i in range(1, len(parts), 2):
             title = parts[i].strip()
-            body = parts[i+1].strip()
+            if i + 1 < len(parts):
+                body = parts[i+1].strip()
+            else:
+                body = ""
             if len(body.split()) >= min_words:
                 clauses.append(f"{title}: {body}")
     else:

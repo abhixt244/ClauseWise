@@ -1,0 +1,21 @@
+# Python bytecode & caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+.env.*
+
+# Runtime uploads
+backend/temp_uploads/
+temp_uploads/
+
+# OS / IDE files
+.DS_Store
+Thumbs.db

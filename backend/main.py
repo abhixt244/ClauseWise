@@ -10,7 +10,7 @@ import re
 try:
     from text_extraction import extract_text
     from clause_segmentation import segment_clauses
-    from granite_api import call_granite, MODEL_NAME
+    from gemini_api import call_gemini, MODEL_NAME
     from risk import assess_risk_by_keywords, enhance_risk_assessment
 except ImportError:
     import sys as _sys
@@ -18,7 +18,7 @@ except ImportError:
     _sys.path.append(_os.path.dirname(_os.path.abspath(__file__)))
     from text_extraction import extract_text
     from clause_segmentation import segment_clauses
-    from granite_api import call_granite, MODEL_NAME
+    from gemini_api import call_gemini, MODEL_NAME
     from risk import assess_risk_by_keywords, enhance_risk_assessment
 
 
@@ -44,10 +44,12 @@ async def analyze_document(file: UploadFile = File(...)):
     """
 
     # Validate file type
-    if not file.filename.lower().endswith(('.pdf', '.docx', '.txt')):
+    if not file.filename or not file.filename.lower().endswith(('.pdf', '.docx', '.txt')):
         raise HTTPException(400, "Only PDF, DOCX, and TXT files are supported")
 
-    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    # Sanitize filename to prevent path traversal
+    safe_name = os.path.basename(file.filename)
+    file_path = os.path.join(UPLOAD_DIR, safe_name)
 
     try:
         # Save uploaded file
@@ -71,13 +73,17 @@ async def analyze_document(file: UploadFile = File(...)):
         if not clauses:
             raise HTTPException(400, "No meaningful clauses found in the document")
 
-        # Step 3: Analyze clauses with Granite
-        print(f"🤖 Step 3: Analyzing {len(clauses)} clauses with Granite AI...")
+        # Step 3: Analyze clauses with Gemini
+        print(f"🤖 Step 3: Analyzing {len(clauses)} clauses with Gemini API...")
         results = []
 
         for idx, clause in enumerate(clauses, 1):
             print(f"\n   Clause {idx}/{len(clauses)}:")
-            ok, out = call_granite(clause)
+            try:
+                ok, out = call_gemini(clause)
+            except RuntimeError as exc:
+                print(f"   ⚠️  Gemini failed, using keyword fallback: {exc}")
+                ok, out = False, None
 
             if not ok:
                 # Fallback to keyword risk scoring
@@ -111,6 +117,8 @@ async def analyze_document(file: UploadFile = File(...)):
             "clauses": final_results
         })
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(500, f"Analysis failed: {str(e)}")
 

@@ -4,10 +4,7 @@ This is an alternative implementation that uses a two-stage approach:
 1. First pass: Extract key information and risk signals
 2. Second pass: Generate final analysis based on extracted data
 
-To use this instead of the single-pass system:
-1. Rename current granite_api.py to granite_api_single.py
-2. Rename this file to granite_api.py
-3. Restart the backend
+Legacy local-model alternative. The active application uses gemini_api.py.
 """
 
 import torch

@@ -70,8 +70,8 @@ Supports uploading and analyzing documents in multiple formats:
 | Category | Technologies |
 |---|---|
 | Programming Language | Python |
-| AI & NLP | IBM Watson, Hugging Face |
-| Generative AI | IBM Granite Models |
+| AI & NLP | Gemini API |
+| Generative AI | Gemini 3.5 Flash-Lite |
 | Frontend | Streamlit, Gradio |
 | Document Processing | PDF, DOCX, TXT |
 | Version Control | Git, GitHub |
@@ -82,17 +82,14 @@ Supports uploading and analyzing documents in multiple formats:
 
 ```text
 ClauseWise/
-│
-├── backend/
-│   ├── models/             # AI models and NLP components
-│   ├── processing/         # Document processing and analysis
-│   └── utils/              # Helper functions
-│
-├── frontend/               # Streamlit / Gradio interface
-│
-├── app.py                 # Application entry point
-├── requirements.txt        # Project dependencies
-└── README.md              # Project documentation
+├── backend/                # FastAPI API and document analysis
+│   ├── main.py
+│   ├── gemini_api.py       # Gemini API client
+│   └── requirements.txt
+├── frontend/               # Streamlit interface
+│   ├── app.py
+│   └── requirements.txt
+└── README.md
 ```
 
 ---
@@ -102,34 +99,43 @@ ClauseWise/
 ### Prerequisites
 
 - Python 3.9+
-- Git
 - pip
+- A Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey)
 
-### 1. Clone the repository
+### 1. Install dependencies
 
-```bash
-git clone https://github.com/abhioder/ClauseWise.git
+From the project directory, create and activate a virtual environment, then install both requirements files:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r backend\requirements.txt
+pip install -r frontend\requirements.txt
 ```
 
-### 2. Navigate to the project directory
+### 2. Start the backend
 
-```bash
-cd ClauseWise
+In the first PowerShell terminal:
+
+```powershell
+$env:GEMINI_API_KEY = "your-gemini-api-key"
+cd backend
+python main.py
 ```
 
-### 3. Install dependencies
+The backend sends clause text to Gemini 3.5 Flash-Lite using the Gemini API. Google’s free tier may use submitted content to improve its products, so do not upload confidential documents when using it.
 
-```bash
-pip install -r requirements.txt
-```
+### 3. Start the frontend
 
-### 4. Run the application
+In a second terminal, from the project directory:
 
-```bash
+```powershell
+.\.venv\Scripts\Activate.ps1
+cd frontend
 streamlit run app.py
 ```
 
-The application will start locally, and you can access it through the URL provided in your terminal.
+Open the local URL printed by Streamlit, usually `http://localhost:8501`.
 
 ---
 

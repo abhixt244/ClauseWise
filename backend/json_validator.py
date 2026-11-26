@@ -27,13 +27,11 @@ def fix_json_string(text: str) -> str:
     json_str = match.group()
     
     # Fix common issues
-    # 1. Unescaped quotes in values
-    json_str = re.sub(r'(?<!\\)"(?=\w)', r'\"', json_str)
-    
-    # 2. Single quotes instead of double quotes
+    # 1. Single quotes instead of double quotes (do this first, before
+    #    any escaping step, so we work with a consistent quoting style)
     json_str = json_str.replace("'", '"')
     
-    # 3. Trailing commas
+    # 2. Trailing commas
     json_str = re.sub(r',\s*}', '}', json_str)
     json_str = re.sub(r',\s*]', ']', json_str)
     
